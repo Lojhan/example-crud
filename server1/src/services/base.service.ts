@@ -1,38 +1,20 @@
-import UserModel from "../models/user.model";
+import DataModel from "models/data.model";
 import BaseModel from "../models/base.model";
 import BaseRepository from "../repositories/base.repository";
-import EmailService from "./mail.service";
-import ViaCepService from "./viacep.service";
+import SendService from "./send.service";
 
 export default class BaseService<T extends BaseModel> {
     constructor(
-        private readonly repository: BaseRepository<T>,
-        private readonly emailService: EmailService,
-        private readonly viacepService: ViaCepService
+        public readonly repository: BaseRepository<T>,
+        public readonly sendService: SendService
     ) {}
 
     getAll(): T[] {
-        return this.repository.getAll();
+        const allData = this.repository.getAll();
+        return allData;
     }
 
-    getById(id: string): T {
-        return this.repository.getById(id);
-    }
-
-    async add(item: any & T): Promise<T> {
-        if (UserModel.isUserModel(item)) {
-            const locationInfo = (await this.viacepService.getInfo(item)).data;
-            item.address = locationInfo;
-            this.emailService.sendEmail(item);
-        }
-        return this.repository.add(item)
-    }
-
-    update(id: string, data: T): T {
-        return this.repository.update(id, data);
-    }
-
-    delete(id: string): void {
-        this.repository.delete(id);
+    add(item: T): T {
+        return this.repository.add(item);
     }
 }

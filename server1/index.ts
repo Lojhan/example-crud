@@ -1,13 +1,11 @@
 import * as express from 'express';
 
-import userRoutes from './src/routes/user.route';
-import bookRoutes from './src/routes/book.route';
+import routes from './src/routes/base.route';
 
 const app = express();
 app.use(express.json())
 
-app.use('/book', bookRoutes);
-app.use('/user', userRoutes);
+app.use('/folha', routes);
 
 
 app.listen(3000, () => {

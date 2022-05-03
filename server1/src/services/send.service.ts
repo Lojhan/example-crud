@@ -1,14 +1,15 @@
 import { AxiosInstance } from "axios";
 import BaseModel from "models/base.model";
 
- export default class EmailService {
+type model = { [x: string]: any } & BaseModel
+ export default class SendService {
     baseUrl: string = 'http://localhost:4000';
     constructor(
         private readonly httpService: AxiosInstance
     ) {}
 
-    sendEmail(model: { [x: string]: any } & BaseModel) {
-        return this.httpService.post(this.baseUrl, model);
+    sendData(data: { items: model[] }) {
+        return this.httpService.post<model[]>(`${this.baseUrl}/folha/add`, data);
     }    
     
  }
