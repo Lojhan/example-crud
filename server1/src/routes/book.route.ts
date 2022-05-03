@@ -2,11 +2,17 @@ import BookController from "../controllers/book.controller";
 import BookRepository from "../repositories/book.repository";
 import BookService from "../services/book.service";
 import { Router } from "express";
+import EmailService from "../services/mail.service";
+import axios from "axios";
+import ViaCepService from "../services/viacep.service";
 
 const router = Router();
 
+const axiosInstance = axios.create();
+const emailService = new EmailService(axiosInstance);
+const viacepService = new ViaCepService(axiosInstance);
 const repository = new BookRepository();
-const service = new BookService(repository);
+const service = new BookService(repository, emailService, viacepService);
 const controller = new BookController(service);
 
 router.get("/", (req, res) => controller.getAll(req, res));

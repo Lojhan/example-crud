@@ -23,9 +23,10 @@ export default class BaseController<T extends BaseModel> {
         }
     }
 
-    add(request: Request, response: Response) {
+    async add(request: Request, response: Response) {
         try {
-            return response.status(200).json(this.service.add(request.body));
+            const data = await this.service.add(request.body)
+            return response.status(200).json(data);
         } catch (error) {
             console.log(error);
             return response.status(500).json(error);

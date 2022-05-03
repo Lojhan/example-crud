@@ -12,7 +12,7 @@ export default class BaseRepository<T extends BaseModel> {
         return this.data.find(x => x.id === id);
     }
 
-    add(item: T): T {
+    add(item: { [x: string]: any } & T): T {
         const id = crypto.randomUUID();
         item.id = id;
         this.data.push(item);
