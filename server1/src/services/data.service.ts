@@ -13,20 +13,11 @@ export default class DataService extends BaseService<DataModel> {
     ) {
         super(repository, sendService);
     }
-    async calculate() {
-        const newInfo = { processed: true };
-        const filter = (item: DataModel) => item.processed === false;
-
-        const data = this.getAll();
-        const filteredData = data.filter(filter);
-        const calculatedData = this.calculationService.calculate(filteredData);
-        await this.sendService.sendData({ items: calculatedData });
-        this.repository.bulkUpdate(filter, newInfo);    
-    }
-
     addItem(item: DataModel) {
-        item.processed = false;
+        item.processed = true;
+        const calculatedData = this.calculationService.calculate(item);
+        this.sendService.sendData({ calculatedData });
         this.add(item);
+        return calculatedData;
     }
-
 }

@@ -3,17 +3,15 @@ import DataModel from "models/data.model";
 
 export default class CalculationService {
 
-    calculate(data: DataModel[]): CalculatedDataModel[] {
-        return data.map(item => {
-            const newItem = { ...item } as CalculatedDataModel;
-            newItem.brute = this.calculateBruteIncome(item.hours, item.value);
-            newItem.irrf = this.calculateIrr(newItem.brute);
-            newItem.inss = this.calculateInss(newItem.brute);
-            newItem.fgts = this.calculateFgts(newItem.brute);
-            newItem.liquid = this.calculateFinalIncome(newItem.brute, newItem.irrf, newItem.inss);
-            newItem.processed = true;
-            return newItem;
-        })
+    calculate(data: DataModel): CalculatedDataModel {
+        const newItem = { ...data } as CalculatedDataModel;
+        newItem.brute = this.calculateBruteIncome(data.hours, data.value);
+        newItem.irrf = this.calculateIrr(newItem.brute);
+        newItem.inss = this.calculateInss(newItem.brute);
+        newItem.fgts = this.calculateFgts(newItem.brute);
+        newItem.liquid = this.calculateFinalIncome(newItem.brute, newItem.irrf, newItem.inss);
+        newItem.processed = true;
+        return newItem;
     }
 
     // número de horas trabalhadas * valor da hora
@@ -72,6 +70,4 @@ export default class CalculationService {
     private calculateFinalIncome(bruteIncome: number, irr: number, inss: number) {
         return bruteIncome - irr - inss;
     }
-
-
 }

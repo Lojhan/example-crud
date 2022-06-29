@@ -1,4 +1,3 @@
-import DataModel from "models/data.model";
 import BaseModel from "../models/base.model";
 import BaseRepository from "../repositories/base.repository";
 import SendService from "./send.service";

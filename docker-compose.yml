@@ -1,0 +1,50 @@
+version: "3.9"
+
+x-service: &service
+    image: node:17.5.0-alpine
+    working_dir: /app
+    restart: unless-stopped
+    command: "npm run start"
+    networks:
+      - IAL_Backend
+
+networks:
+  IAL_Backend:
+    driver: bridge
+
+services:
+  rabbitmq:
+    container_name: rabbitmq-server-deconto
+    image: rabbitmq:3.9-management
+    environment:
+      RABBITMQ_CONFIG_FILE: ./rabbitmq.conf
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - .:/app
+    working_dir: /app
+    networks:
+      - IAL_Backend
+    restart: unless-stopped
+  server1:
+    <<: *service
+    container_name: server1
+    volumes:
+      - ./server1:/app
+    ports:
+      - "3000:3000"
+  server2: 
+    container_name: server2-java
+    image: openjdk:17.0.2-slim-buster
+    volumes:
+      - ./server2-java:/app
+    working_dir: /app
+    ports:
+      - "4000:8080"
+    command: ./mvnw spring-boot:run -X
+    networks:
+      - IAL_Backend
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq-server-deconto

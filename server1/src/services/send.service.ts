@@ -1,15 +1,17 @@
-import { AxiosInstance } from "axios";
 import BaseModel from "models/base.model";
+import CalculatedDataModel from "models/calculatedData.model";
+import RabbitMQService from "./rabbitmq.service";
 
-type model = { [x: string]: any } & BaseModel
+type model = { [x: string]: unknown } & BaseModel
  export default class SendService {
-    baseUrl: string = 'http://localhost:4000';
-    constructor(
-        private readonly httpService: AxiosInstance
-    ) {}
+    baseUrl = 'http://localhost:4000';
+    rabbitMQService: RabbitMQService;
+    constructor() {
+        this.rabbitMQService = RabbitMQService.getInstance();
+    }
 
-    sendData(data: { items: model[] }) {
-        return this.httpService.post<model[]>(`${this.baseUrl}/folha/add`, data);
+    sendData(data: { calculatedData: CalculatedDataModel }) {
+        return this.rabbitMQService.publish('folha', JSON.stringify(data));
     }    
     
  }
